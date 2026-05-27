@@ -155,7 +155,7 @@ TARGET_SCREEN_DENSITY := 520
 BOARD_HAS_LARGE_FILESYSTEM := true
 TARGET_SYSTEM_PROP     += $(DEVICE_PATH)/system.prop
 TARGET_RECOVERY_FSTAB  := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
-TARGET_RECOVERY_INITRC := $(DEVICE_PATH)/recovery/root/init.recovery.mt6768.rc
+TARGET_RECOVERY_INITRC := $(DEVICE_PATH)/recovery/root/init.recovery.mt6897.rc
 
 # Debug
 TWRP_INCLUDE_LOGCAT := true
