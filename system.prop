@@ -1,0 +1,48 @@
+# Identity hardware
+Build.BRAND=MTK
+ro.hardware=mt6897
+ro.vendor.mediatek.platform=MT6897
+ro.soc.manufacturer=Mediatek
+ro.vendor.tran.version.release=LJ9-H972TBD-V-BASE-260324V2099DevT
+ro.hardware.egl=meow
+ro.sf.lcd_density=520
+ro.frp.pst=/dev/block/by-name/frp
+
+# Fstab
+ro.postinstall.fstab.prefix=/system
+
+# USB MTP
+ro.sys.usb.storage.type=mtp
+ro.sys.usb.bicr=no
+ro.sys.usb.mtp.whql.enable=0
+ro.vendor.tran.otg_lpo_support=1
+ro.vendor.tran.sw_otg_support=1
+ro.secure=0
+ro.adb.secure=0
+ro.debuggable=1
+persist.adb.nonblocking_ffs=1
+
+ro.recovery.usb.vid=18D1
+ro.recovery.usb.adb.pid=D001
+ro.recovery.usb.fastboot.pid=4EE0
+
+vendor.audio.usb.super_hifi=true
+vendor.audio.usb.iems.period_us=5000
+
+ro.vendor.usb.kpoc_adb=0
+
+# Crypto
+ro.crypto.volume.filenames_mode=aes-256-cts
+
+# TEE & Gatekeeper & Keymaster
+ro.vendor.mtk_f2fs_enable=1
+ro.vendor.mtk_emmc_support=1
+ro.vendor.mtk_data_config=1
+ro.mtk_key_manager_support=1
+ro.vendor.mtk_tee_gp_support=1
+ro.vendor.mtk_trustonic_tee_support=1
+ro.vendor.tran.trans_pay_tee=1
+ro.vendor.keymaster_version=7.0
+ro.hardware.gatekeeper=trustonic
+ro.hardware.kmsetkey=trustonic
+ro.hardware.paytrigger=trustonic

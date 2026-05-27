@@ -1,0 +1,287 @@
+#import /init.recovery.tee.rc
+#import /init.recovery.trustonic.rc
+
+on init
+    export LD_LIBRARY_PATH /system/lib64:/vendor/lib64:/vendor/lib64/hw:/system/lib64/hw
+
+on fs && property:ro.debuggable=0
+    # distinguish USB shoulde connect or not, i.e. CDP vs SDP
+    # set charging free due to it wait for USB activation
+
+on boot
+    exec u:r:update_engine:s0 root root -- /system/bin/mtk_plpath_utils
+
+on init
+    setprop sys.usb.configfs 1
+    setprop sys.usb.controller "11201000.usb0"
+    setprop crypto.ready 1
+    setprop sys.usb.ffs.aio_compat 0
+
+on init
+    start mtk_secure_element_hal_service
+    
+on post-fs
+    write /sys/class/leds/vibrator/trigger "transient"
+    start vendor.vibrator-default
+    
+on fs && property:ro.debuggable=0
+    # distinguish USB shoulde connect or not, i.e. CDP vs SDP
+    write /sys/class/udc/musb-hdrc/device/cmode 2
+    # set charging free due to it wait for USB activation
+    start adbd
+
+on post-fs
+    mkdir /tranfs/tranfac 0775 system system
+    mkdir /tranfs/tranfac/app 0775 system system
+    mkdir /tranfs/tranfac/cache 0775 system system
+    mkdir /tranfs/tranfac/config 0775 system system
+    mkdir /tranfs/tranfac/config/common 0775 system system
+    mkdir /tranfs/tranfac/config/mode 0775 system system
+    mkdir /tranfs/tranfac/config/mode/QT 0775 system system
+    mkdir /tranfs/tranfac/config/mode/MMI1 0775 system system
+    mkdir /tranfs/tranfac/config/mode/MMI2 0775 system system
+    mkdir /tranfs/tranfac/config/aging 0775 system system
+
+on post-fs-data
+    # for mtk: vendor/mediatek/proprietary/external/libnvram/nvram_daemon/nvram_daemon.rc
+    # for sprd
+    chmod 0660 /mnt/vendor/productinfo/tranfac_sensor.properties
+    chmod 0660 /mnt/vendor/productinfo/tranfacmode.db
+    chmod 0660 /mnt/vendor/productinfo/oximeter.txt
+
+on init
+    # for sprd wifi apk exit
+    write /tranfs/tranfac/cache/WifiApkExit 0
+    chmod 0775 /tranfs/tranfac/cache/WifiApkExit
+    chown system system /tranfs/tranfac/cache/WifiApkExit
+
+on boot
+    setprop sys.tranfac.ro.cmd.verified 0
+
+# for mtk
+on property:sys.tranfac.ro.db.mtk.rm=1
+    rm /mnt/vendor/persist/tranfacmode.db
+    setprop sys.tranfac.ro.db.mtk.rm 0
+
+# for sprd
+on property:sys.tranfac.ro.db.sprd.rm=1
+    rm /mnt/vendor/productinfo/tranfacmode.db
+    setprop sys.tranfac.ro.db.sprd.rm 0
+
+on property:sys.tranfac.ro.adb.tcp.port=*
+    setprop service.adb.tcp.port ${sys.tranfac.ro.adb.tcp.port}
+
+on fs
+    install_keyring
+    
+    symlink /dev/block/platform/bootdevice /dev/block/bootdevice
+
+on post-fs
+    # Support A/B feature for EMMC and UFS boot region
+    symlink /dev/block/sda /dev/block/mmcblk0boot0
+    symlink /dev/block/sdb /dev/block/mmcblk0boot1
+    symlink /dev/block/mmcblk0boot0 /dev/block/platform/bootdevice/by-name/preloader_a
+    symlink /dev/block/mmcblk0boot1 /dev/block/platform/bootdevice/by-name/preloader_b
+    symlink /dev/block/mmcblk0boot0 /dev/block/by-name/preloader_a
+    symlink /dev/block/mmcblk0boot1 /dev/block/by-name/preloader_b
+
+    exec u:r:update_engine:s0 root root -- /system/bin/mtk_plpath_utils
+    
+    start mtk.plpath.utils.link
+
+on property:persist.vendor.mtk.pl_lnk=1
+    symlink /dev/block/mapper/pl_a /dev/block/by-name/preloader_raw_a
+    symlink /dev/block/mapper/pl_b /dev/block/by-name/preloader_raw_b
+    symlink /dev/block/mapper/pl_a /dev/block/platform/bootdevice/by-name/preloader_raw_a
+    symlink /dev/block/mapper/pl_b /dev/block/platform/bootdevice/by-name/preloader_raw_b
+
+# FSTAB_RAW2(lk2,bootloader2) of fstab.in.emmc, but without bootloader2 mount point
+    symlink /dev/block/by-name/lk1 /dev/block/by-name/bootloader1
+    symlink /dev/block/by-name/lk2 /dev/block/by-name/bootloader2
+
+# Fix ro.vendor.mtk_ufs_support remove issue of recovery mode
+on property:vendor.mtk.boot0_linka=1
+    symlink /dev/block/sda /dev/block/mmcblk0boot0
+
+on property:vendor.mtk.boot0_linkb=1
+    symlink /dev/block/sdb /dev/block/mmcblk0boot0
+
+on property:vendor.mtk.boot0_linkc=1
+    symlink /dev/block/sdc /dev/block/mmcblk0boot0
+
+on property:vendor.mtk.boot1_linka=1
+    symlink /dev/block/sda /dev/block/mmcblk0boot1
+
+on property:vendor.mtk.boot1_linkb=1
+    symlink /dev/block/sdb /dev/block/mmcblk0boot1
+
+on property:vendor.mtk.boot1_linkc=1
+    symlink /dev/block/sdc /dev/block/mmcblk0boot1
+
+service mtk.plpath.utils.link /system/bin/mtk_plpath_utils
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+
+service keystore_auth /system/bin/keystore_auth
+    oneshot
+    user system
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+service vendor.boot-default /vendor/bin/hw/android.hardware.boot-service.mtk
+    class early_hal
+    user root
+    group root
+    seclabel u:r:recovery:s0
+    interface aidl android.hardware.boot.IBootControl/default
+
+service vendor.health-default /vendor/bin/hw/android.hardware.health-service.example
+    class hal
+    user root
+    group root
+    capabilities WAKE_ALARM BLOCK_SUSPEND
+    file /dev/kmsg w
+    seclabel u:r:recovery:s0
+    
+service mtk_secure_element_hal_service /vendor/bin/hw/android.hardware.secure_element@1.2-service-mediatek
+    class hal
+    user root
+    group root
+    seclabel u:r:recovery:s0
+    
+service vendor.vibrator-default /vendor/bin/hw/android.hardware.vibrator-service.mediatek
+    class hal
+    user root
+    group root
+    seclabel u:r:recovery:s0
+    setenv RICHTAP_DEVICE_PATH  /dev/aw8697_haptic
+    setenv ENV_RICHTAP_CONFIG_PATH /vendor/etc/aac_richtap.config
+    
+on property:persist.sys.value_vibrate_ontouch=*
+    setprop persist.vendor.vibrate_gain ${persist.sys.value_vibrate_ontouch}
+
+service tee-1-1 /vendor/bin/hw/vendor.trustonic.tee@1.1-service
+    class hal
+    user root
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+service vendor.boot-default /vendor/bin/hw/android.hardware.boot-service.mtk
+    class early_hal
+    user root
+    group root
+    interface aidl android.hardware.boot.IBootControl/default
+    
+service trustonic_check_keybox_service /vendor/bin/kmsetkey_ca.trustonic -c
+    class late_start
+    user root
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+service mtk_secure_element_hal_service /vendor/bin/hw/android.hardware.secure_element@1.2-service-mediatek
+    class hal
+    user secure_element
+    group secure_element
+
+service vendor.keymint-trustonic /vendor/bin/hw/android.hardware.security.keymint@3.0-service.trustonic
+    class early_hal
+    user root
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+    
+service vendor.health-default /vendor/bin/hw/android.hardware.health-service.example
+    class hal
+    user root
+    group root
+    capabilities WAKE_ALARM BLOCK_SUSPEND
+    file /dev/kmsg w
+    disabled
+    seclabel u:r:recovery:s0
+
+service vendor.gatekeeper-default /vendor/bin/hw/android.hardware.gatekeeper-service.trustonic
+    class early_hal
+    user root
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+service vendor.transsion.hardware.tranfacaidl-service /vendor/bin/hw/vendor.transsion.hardware.tranfacaidl-service
+    interface aidl vendor.transsion.hardware.tranfacaidl.ITranfacAidl/default
+    class hal
+    user root
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+ 
+on property:ro.crypto.state=encrypted && property:ro.crypto.type=file
+    install_keyring
+    
+service keystore /system/bin/keystore /tmp/misc/keystore
+    user root
+    group root drmrpc readproc log
+    disabled
+    seclabel u:r:recovery:s0
+
+# We use the property set by Trustonic daemon so mcOpenSession is available
+# and DrAndroid is loaded
+on property:ro.vendor.trustonic.ready=true
+    start vendor.gatekeeper-default
+    
+on property:vendor.sys.listener.registered=true
+    start mobicore
+#    start tee-1-1
+#    start vendor.keymaster-4-1-trustonic
+#    start vendor.gatekeeper-1-0
+#    start trustonic_check_keybox_service
+#    start keymaster_attestation-1-1
+#    start paytrigger_hal_service
+    
+on property:hwservicemanager.ready=true
+    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry ++ (FBE encrypted)"
+    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry -- (FBE encrypted)"
+    start mobicore
+#    start tee-1-1
+#    start vendor.keymaster-4-1-trustonic
+#    start vendor.gatekeeper-1-0
+#    start trustonic_check_keybox_service
+#    start keymaster_attestation-1-1
+#    start paytrigger_hal_service
+
+on property:ro.crypto.state=unsupported
+    stop mobicore
+#    stop tee-1-1
+#    stop vendor.keymaster-4-1-trustonic
+#    stop vendor.gatekeeper-1-0
+#    stop trustonic_check_keybox_service
+#    stop keymaster_attestation-1-1
+#    stop paytrigger_hal_service
+
+on property:ro.crypto.type=file && property:ro.crypto.state=unencrypted
+    stop mobicore
+#    stop tee-1-1
+#    stop vendor.keymaster-4-1-trustonic
+#    stop vendor.gatekeeper-1-0
+#    stop trustonic_check_keybox_service
+#    stop keymaster_attestation-1-1
+#    stop paytrigger_hal_service
+
+on property:twrp.decrypt.done=true && property:twrp.all.users.decrypted=true
+    stop mobicore
+#    stop tee-1-1
+#    stop vendor.keymaster-4-1-trustonic
+#    stop vendor.gatekeeper-1-0
+#    stop trustonic_check_keybox_service
+#    stop keymaster_attestation-1-1
+#    stop paytrigger_hal_service
+
+on boot
+     start boot-hal-1-2
+     start health-hal-2-1

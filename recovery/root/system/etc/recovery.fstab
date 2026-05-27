@@ -1,0 +1,63 @@
+#fstab file by isus203 for Tecno Pova 7 Ultra - LJ9-H972TBD-V-BASE-260324V2099DevT- lj9_h972
+
+#<mnt_point>      <device>       <type>      <mount>                               <mnt_flags and options>
+system /system erofs ro wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+
+system /system ext4 ro wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+
+system_ext /system_ext erofs ro wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+
+system_ext /system_ext ext4 ro wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+
+vendor /vendor erofs ro wait,slotselect,avb,logical,first_stage_mount
+vendor /vendor ext4 ro wait,slotselect,avb,logical,first_stage_mount
+
+product /product erofs ro wait,slotselect,avb,logical,first_stage_mount
+product /product ext4 ro wait,slotselect,avb,logical,first_stage_mount
+
+vendor_dlkm /vendor_dlkm erofs ro wait,slotselect,avb,logical,first_stage_mount
+vendor_dlkm /vendor_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
+
+odm_dlkm /odm_dlkm erofs ro wait,slotselect,avb,logical,first_stage_mount
+odm_dlkm /odm_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
+
+system_dlkm /system_dlkm erofs ro wait,slotselect,avb,logical,first_stage_mount
+system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
+
+tr_mi /tr_mi ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_mi /tr_mi erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+tr_theme /tr_theme ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_theme /tr_theme erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+tr_region /tr_region ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_region /tr_region erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+tr_company /tr_company ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_company /tr_company erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+tr_carrier /tr_carrier ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_carrier /tr_carrier erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+tr_product /tr_product ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_product /tr_product erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+tr_preload /tr_preload ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_preload /tr_preload erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+tr_overlayfs /tr_overlayfs ext4 ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+tr_overlayfs /tr_overlayfs erofs ro wait,slotselect,logical,first_stage_mount,avb_keys=/vendor/etc/tran_avb.pubkey,nofail
+
+
+#<mnt_point>                    <device>    <type>                                <mnt_flags and options>
+/dev/block/by-name/metadata /metadata f2fs noatime,nosuid,nodev,discard wait,check,formattable,first_stage_mount
+
+/dev/block/by-name/userdata /data f2fs noatime,nosuid,nodev,discard,noflush_merge,fsync_mode=nobarrier,reserve_root=134217,resgid=1065,inlinecrypt wait,check,formattable,quota,latemount,resize,reservedsize=128m,checkpoint=fs,fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized,keydirectory=/metadata/vold/metadata_encryption,fsverity,sysfs_path=/sys/devices/platform/soc/112b0000.ufshci
+
+
+#<mnt_point>                    <device>    <type>                                <mnt_flags and options>
+/dev/block/by-name/misc /misc emmc defaults defaults
+
+/dev/block/by-name/init_boot /init_boot emmc defaults defaults
+
+/dev/block/by-name/boot /boot emmc defaults first_stage_mount,nofail,slotselect
