@@ -1,6 +1,6 @@
 # TWRP device tree for  Tecno Pova 7 Ultra (LJ9)
 ## Device image
-![lj9](https://github.com/tecno-mt6768/tecno_kh7n_twrp/blob/main/Device_image/30065104b.jpg)
+![lj9](https://github.com/isus203/tecno_lj9_recovery/blob/main/Device_image/LJ9.jpg)
 
 ## Device specification
 Basic   | Spec Sheet
