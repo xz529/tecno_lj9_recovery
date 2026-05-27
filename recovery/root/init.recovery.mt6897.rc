@@ -171,12 +171,6 @@ service tee-1-1 /vendor/bin/hw/vendor.trustonic.tee@1.1-service
     group root
     disabled
     seclabel u:r:recovery:s0
-
-service vendor.boot-default /vendor/bin/hw/android.hardware.boot-service.mtk
-    class early_hal
-    user root
-    group root
-    interface aidl android.hardware.boot.IBootControl/default
     
 service trustonic_check_keybox_service /vendor/bin/kmsetkey_ca.trustonic -c
     class late_start
@@ -185,11 +179,6 @@ service trustonic_check_keybox_service /vendor/bin/kmsetkey_ca.trustonic -c
     disabled
     seclabel u:r:recovery:s0
 
-service mtk_secure_element_hal_service /vendor/bin/hw/android.hardware.secure_element@1.2-service-mediatek
-    class hal
-    user secure_element
-    group secure_element
-
 service vendor.keymint-trustonic /vendor/bin/hw/android.hardware.security.keymint@3.0-service.trustonic
     class early_hal
     user root
@@ -197,15 +186,6 @@ service vendor.keymint-trustonic /vendor/bin/hw/android.hardware.security.keymin
     disabled
     seclabel u:r:recovery:s0
     
-service vendor.health-default /vendor/bin/hw/android.hardware.health-service.example
-    class hal
-    user root
-    group root
-    capabilities WAKE_ALARM BLOCK_SUSPEND
-    file /dev/kmsg w
-    disabled
-    seclabel u:r:recovery:s0
-
 service vendor.gatekeeper-default /vendor/bin/hw/android.hardware.gatekeeper-service.trustonic
     class early_hal
     user root
@@ -238,49 +218,56 @@ on property:ro.vendor.trustonic.ready=true
 on property:vendor.sys.listener.registered=true
     start mobicore
 #    start tee-1-1
-#    start vendor.keymaster-4-1-trustonic
-#    start vendor.gatekeeper-1-0
+    start vendor.boot-default
+    start vendor.health-default
+#    start mtk_secure_element_hal_service
+    start vendor.vibrator-default
 #    start trustonic_check_keybox_service
-#    start keymaster_attestation-1-1
-#    start paytrigger_hal_service
-    
+#    start vendor.keymint-trustonic
+#    start vendor.gatekeeper-default
+#    start vendor.transsion.hardware.tranfacaidl-service
+
+
 on property:hwservicemanager.ready=true
     write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry ++ (FBE encrypted)"
     write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry -- (FBE encrypted)"
     start mobicore
 #    start tee-1-1
-#    start vendor.keymaster-4-1-trustonic
-#    start vendor.gatekeeper-1-0
+    start vendor.boot-default
+    start vendor.health-default
+#    start mtk_secure_element_hal_service
+    start vendor.vibrator-default
 #    start trustonic_check_keybox_service
-#    start keymaster_attestation-1-1
-#    start paytrigger_hal_service
+#    start vendor.keymint-trustonic
+#    start vendor.gatekeeper-default
+#    start vendor.transsion.hardware.tranfacaidl-service
 
 on property:ro.crypto.state=unsupported
     stop mobicore
 #    stop tee-1-1
-#    stop vendor.keymaster-4-1-trustonic
-#    stop vendor.gatekeeper-1-0
+#    stop mtk_secure_element_hal_service
 #    stop trustonic_check_keybox_service
-#    stop keymaster_attestation-1-1
-#    stop paytrigger_hal_service
+#    stop vendor.keymint-trustonic
+#    stop vendor.gatekeeper-default
+#    stop vendor.transsion.hardware.tranfacaidl-service
 
 on property:ro.crypto.type=file && property:ro.crypto.state=unencrypted
     stop mobicore
 #    stop tee-1-1
-#    stop vendor.keymaster-4-1-trustonic
-#    stop vendor.gatekeeper-1-0
+#    stop mtk_secure_element_hal_service
 #    stop trustonic_check_keybox_service
-#    stop keymaster_attestation-1-1
-#    stop paytrigger_hal_service
+#    stop vendor.keymint-trustonic
+#    stop vendor.gatekeeper-default
+#    stop vendor.transsion.hardware.tranfacaidl-service
 
 on property:twrp.decrypt.done=true && property:twrp.all.users.decrypted=true
     stop mobicore
 #    stop tee-1-1
-#    stop vendor.keymaster-4-1-trustonic
-#    stop vendor.gatekeeper-1-0
+#    stop mtk_secure_element_hal_service
 #    stop trustonic_check_keybox_service
-#    stop keymaster_attestation-1-1
-#    stop paytrigger_hal_service
+#    stop vendor.keymint-trustonic
+#    stop vendor.gatekeeper-default
+#    stop vendor.transsion.hardware.tranfacaidl-service
 
 on boot
      start boot-hal-1-2
