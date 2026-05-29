@@ -204,7 +204,8 @@ TW_USE_SERIALNO_PROPERTY_FOR_DEVICE_ID := true
 TW_LOAD_VENDOR_BOOT_MODULES := true
 
 # Density / StatusBar
-TARGET_RECOVERY_LCD_BACKLIGHT_PATH := \"/sys/class/leds/lcd-backlight/brightness\"
+
+TARGET_RECOVERY_LCD_BACKLIGHT_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 
 TW_INPUT_BLACKLIST    := "hbtp_vm"
@@ -226,7 +227,7 @@ TARGET_SCREEN_DENSITY := 520
 # TW_CUSTOM_BATTERY_POS := 800
 
 # CPU Temperature
-TW_CUSTOM_CPU_TEMP_PATH := "/sys/class/thermal/thermal_zone28/temp"
+TW_CUSTOM_CPU_TEMP_PATH := /sys/class/thermal/thermal_zone28/temp
 
 # USB Mounting
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.usb0/lun.%d/file
