@@ -7,19 +7,17 @@
 /vendor               emmc         /dev/block/mapper/vendor                             flags=display="Vendor";logical;slotselect;backup=1;flashimg=1;removable;wipeingui
 /product              emmc         /dev/block/mapper/product                            flags=display="Product";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
 /system_ext           emmc         /dev/block/mapper/system_ext                         flags=display="System_ext";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
-
-vendor_dlkm /vendor_dlkm erofs ro wait,slotselect,avb,logical,first_stage_mount
-vendor_dlkm /vendor_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
-
-
-odm_dlkm /odm_dlkm erofs ro wait,slotselect,avb,logical,first_stage_mount
-odm_dlkm /odm_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
-
-
-system_dlkm /system_dlkm erofs ro wait,slotselect,avb,logical,first_stage_mount
-system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
-
-
+/odm_dlkm           emmc         /dev/block/mapper/odm_dlkm                         flags=display="Odm_dlkm";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/vendor_dlkm           emmc         /dev/block/mapper/vendor_dlkm                         flags=display="Vendor_dlkm";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/system_dlkm           emmc         /dev/block/mapper/system_dlkm                         flags=display="System_dlkm";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_preload            emmc         /dev/block/mapper/tr_preload                         flags=display="Tr_preload";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_overlayfs            emmc         /dev/block/mapper/tr_overlayfs                         flags=display="Tr_overlayfs";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_carrier            emmc         /dev/block/mapper/tr_carrier                         flags=display="Tr_carrier";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_product            emmc         /dev/block/mapper/tr_product                         flags=display="Tr_product";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_region            emmc         /dev/block/mapper/tr_region                         flags=display="Tr_region";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_company            emmc         /dev/block/mapper/tr_company                         flags=display="Tr_company";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_mi            emmc         /dev/block/mapper/tr_mi                         flags=display="Tr_mi";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
+/tr_theme            emmc         /dev/block/mapper/tr_theme                         flags=display="Tr_theme";logical;slotselect;removable;wipeingui;backup=1;flashimg=1
 
 
 # Userdata/Metadata/Tranfs/Storage partitions/Magisk Modules
@@ -32,9 +30,6 @@ system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
 /cust               ext4  /dev/block/by-name/cust                   flags=display="Cust"backup=1;flashimg
 
 
-
-
-
 # Other partitions
 /boot_para            emmc         /dev/block/by-name/boot_para                         flags=display="Boot_para";backup=1;flashimg=1
 /boot                 emmc         /dev/block/by-name/boot                              flags=backup=1;display="Boot";flashimg=1;backup=1;slotselect
@@ -42,14 +37,8 @@ system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
 /vendor_boot        emmc  /dev/block/by-name/vendor_boot            flags=display="Vendor Boot";slotselect;backup=1;flashimg
 
 
-
-
-
 # Preloader
 /preloader            emmc         /dev/block/by-name/preloader                         flags=backup=1;display="Preloader";flashimg=1;slotselect
-
-
-
 
 
 # AVB partitions
@@ -57,10 +46,6 @@ system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
 /vbmeta               emmc         /dev/block/by-name/vbmeta                            flags=display="Vbmeta";backup=1;flashimg=1;slotselect
 /vbmeta_vendor        emmc         /dev/block/by-name/vbmeta_vendor                     flags=display="Vbmeta Vendor";slotselect;flashimg=1;slotselect
 /vbmeta_system        emmc         /dev/block/by-name/vbmeta_system                     flags=display="Vbmeta System";slotselect;flashimg=1;slotselect
-
-
-
-
 
 
 # Important partitions 
@@ -72,10 +57,6 @@ system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
 /frp           emmc         /dev/block/by-name/frp                               flags=display="FRP";backup=1;flashimg=1;removable;wipeingui
 /nvram                emmc         /dev/block/by-name/nvram                             flags=display="Nvram";backup=1;flashimg=1
 /proinfo              emmc         /dev/block/by-name/proinfo                           flags=display="Proinfo";backup=1;flashimg=1
-
-
-
-
 
 
 # Persistent Firmware & Properties
@@ -93,18 +74,22 @@ system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
 /tkv                  emmc         /dev/block/by-name/tkv                               flags=display="Tkv";backup=1;flashimg=1
 /misc                 emmc         /dev/block/by-name/misc                              flags=display="Misc";backup=1;flashimg=1
 /dpm               emmc  /dev/block/by-name/dpm flags=display="Dpm";backup=1;flashimg=1
-/ccu                emmc  /dev/block/by-name/ccu flags=display="Misc";backup=1;flashimg=1
-/vcp                emmc  /dev/block/by-name/vcp flags=display="Ccu";backup=1;flashimg=1
+/ccu                emmc  /dev/block/by-name/ccu flags=display="Ccu";backup=1;flashimg=1
+/vcp                emmc  /dev/block/by-name/vcp flags=display="Vcp";backup=1;flashimg=1
 /gpueb              emmc  /dev/block/by-name/gpueb flags=display="Gpueb";backup=1;flashimg=1
 /mcf_ota            emmc  /dev/block/by-name/mcf_ota flags=display="Mcf_ota";backup=1;flashimg=1
 /odmdtbo            emmc  /dev/block/by-name/odmdtbo flags=display="Odmdtbo";backup=1;flashimg=1
-
-
-
+/mvpu_algo                  emmc         /dev/block/by-name/mvpu_algo                               flags=display="Mvpu_algo";backup=1;flashimg=1;slotselect
+/apusys                  emmc         /dev/block/by-name/apusys                               flags=display="Apusys";backup=1;flashimg=1;slotselect
+/audio_dsp                  emmc         /dev/block/by-name/audio_dsp                               flags=display="Audio_dsp";backup=1;flashimg=1;slotselect
+/pi_img                  emmc         /dev/block/by-name/pi_img                               flags=display="Pi_img";backup=1;flashimg=1
+/dev/block/by-name/pi_img /pi_img emmc defaults defaults
+/connsys_wifi                  emmc         /dev/block/by-name/connsys_wifi                               flags=display="Connsys_wifi";backup=1;flashimg=1
+/connsys_bt                  emmc         /dev/block/by-name/connsys_bt                               flags=display="Connsys_bt";backup=1;flashimg=1
 
 
 # Modem partitions
-/md1img               emmc         /dev/block/by-name/md1img                            flags=display="Md1img";backup=1;flashimg=1;slotselect
+/modem               emmc         /dev/block/by-name/modem                            flags=display="Modem";backup=1;flashimg=1;slotselect
 /md1dsp               emmc         /dev/block/by-name/md1dsp                            flags=display="Md1dsp";backup=1;flashimg=1;slotselect
 /mcupm1              emmc  /dev/block/by-name/mcupm1 flags=display="Mcupm1";backup=1;flashimg=1;slotselect
 /mcupm2              emmc  /dev/block/by-name/mcupm2 flags=display="Mcupm2";backup=1;flashimg=1;slotselect
@@ -112,87 +97,6 @@ system_dlkm /system_dlkm ext4 ro wait,slotselect,avb,logical,first_stage_mount
 /md3img              emmc  /dev/block/by-name/md3img flags=display="Md3img";backup=1;flashimg=1;slotselect
 
 
-
-
-
 # Removable Storage
 /sdcard1            auto  /dev/block/mmcblk1p1 /dev/block/mmcblk0p1 flags=fsflags=utf8;display="MicroSD";storage;wipeingui;removable
 /usb_otg            vfat  /dev/block/sdd1      /dev/block/sdd       flags=fsflags=utf8;display="USB-Storage";storage;wipeingui;removable
-
-
-
-
-
-
-/dev/block/by-name/frp /persistent emmc defaults defaults
-
-/dev/block/by-name/nvram /nvram emmc defaults defaults
-/dev/block/by-name/proinfo /proinfo emmc defaults defaults
-/dev/block/by-name/lk1 /lk1 emmc defaults defaults
-/dev/block/by-name/bootloader2 /bootloader2 emmc defaults defaults
-/dev/block/by-name/para /para emmc defaults defaults
-/dev/block/by-name/misc /misc emmc defaults defaults
-/dev/block/by-name/init_boot /init_boot emmc defaults defaults
-
-
-
-
-/dev/block/by-name/logo /logo emmc defaults defaults
-/dev/block/by-name/expdb /expdb emmc defaults defaults
-/dev/block/by-name/seccfg /seccfg emmc defaults defaults
-
-/dev/block/by-name/tee1 /tee1 emmc defaults defaults
-/dev/block/by-name/tee2 /tee2 emmc defaults defaults
-
-
-/dev/block/by-name/scp1 /scp1 emmc defaults defaults
-/dev/block/by-name/scp2 /scp2 emmc defaults defaults
-
-
-/dev/block/by-name/sspm1 /sspm1 emmc defaults defaults
-/dev/block/by-name/sspm2 /sspm2 emmc defaults defaults
-
-
-/dev/block/by-name/dpm1 /dpm1 emmc defaults defaults
-/dev/block/by-name/dpm2 /dpm2 emmc defaults defaults
-
-/dev/block/by-name/mcupm1 /mcupm1 emmc defaults defaults
-/dev/block/by-name/mcupm2 /mcupm2 emmc defaults defaults
-
-
-
-/dev/block/by-name/modem /modem emmc defaults defaults
-/dev/block/by-name/md1dsp /md1dsp emmc defaults defaults
-/dev/block/by-name/md1arm7 /md1arm7 emmc defaults defaults
-/dev/block/by-name/md3img /md3img emmc defaults defaults
-
-
-
-
-
-/dev/block/by-name/gz1 /gz1 emmc defaults defaults
-/dev/block/by-name/gz2 /gz2 emmc defaults defaults
-/dev/block/by-name/ccu /ccu emmc defaults defaults
-/dev/block/by-name/vcp /vcp emmc defaults defaults
-/dev/block/by-name/gpueb /gpueb emmc defaults defaults
-/dev/block/by-name/mcf_ota /mcf_ota emmc defaults defaults
-/dev/block/by-name/vendor_boot /vendor_boot emmc defaults defaults
-/dev/block/by-name/mvpu_algo1 /mvpu_algo1 emmc defaults defaults
-/dev/block/by-name/mvpu_algo2 /mvpu_algo2 emmc defaults defaults
-/dev/block/by-name/apusys1 /apusys1 emmc defaults defaults
-/dev/block/by-name/apusys2 /apusys2 emmc defaults defaults
-
-/dev/block/by-name/spmfw /spmfw emmc defaults defaults
-
-
-
-
-
-/dev/block/by-name/audio_dsp /audio_dsp emmc defaults defaults
-
-/dev/block/by-name/pi_img /pi_img emmc defaults defaults
-/dev/block/by-name/boot_para /boot_para emmc defaults defaults
-/dev/block/by-name/odmdtbo /odmdtbo emmc defaults defaults
-/dev/block/by-name/dtbo /dtbo emmc defaults defaults
-/dev/block/by-name/connsys_wifi /connsys_wifi emmc defaults defaults
-/dev/block/by-name/connsys_bt /connsys_bt emmc defaults defaults
