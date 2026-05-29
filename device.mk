@@ -106,9 +106,9 @@ PRODUCT_EXTRA_RECOVERY_KEYS += \
     $(DEVICE_PATH)/security/releasekey
 
 # Hidl Service
-#PRODUCT_ENFORCE_VINTF_MANIFEST := true
+# PRODUCT_ENFORCE_VINTF_MANIFEST := true
 
-TWRP_REQUIRED_MODULES += \
+# TWRP_REQUIRED_MODULES += \
     task_profiles.json
     
 # Additional binaries & libraries needed for recovery
