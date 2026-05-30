@@ -10,6 +10,7 @@ on fs && property:ro.debuggable=0
 
 on init
     setprop sys.usb.configfs 1
+    setprop sys.usb.config adb
     setprop sys.usb.controller "11201000.usb0"
     setprop crypto.ready 1
     setprop sys.usb.ffs.aio_compat 0
@@ -19,6 +20,7 @@ on init
     
 on post-fs
     write /sys/class/leds/vibrator/trigger "transient"
+    start vendor.boot-default
     start vendor.vibrator-default
     
 on fs && property:ro.debuggable=0
@@ -54,7 +56,9 @@ on init
 
 on boot
     setprop sys.tranfac.ro.cmd.verified 0
-
+    insmod /lib/modules/adaptive-ts.ko
+    insmod /lib/modules/focaltech_ft3683g.ko
+    
 # for mtk
 on property:sys.tranfac.ro.db.mtk.rm=1
     rm /mnt/vendor/persist/tranfacmode.db
@@ -269,3 +273,4 @@ on property:twrp.decrypt.done=true && property:twrp.all.users.decrypted=true
 on boot
      start boot-hal-1-2
      start health-hal-2-1
+     start vendor.health-default
